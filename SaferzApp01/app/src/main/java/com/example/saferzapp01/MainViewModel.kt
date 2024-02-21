@@ -72,13 +72,16 @@ class MainViewModel @Inject constructor( val repository:Repository):ViewModel() 
             is SignupEvent.SetFullName -> _signupState.update { it.copy(fullName = event.fullName) }
             is SignupEvent.SetReligion -> _signupState.update { it.copy(religion = event.religion) }
             is SignupEvent.SetGender -> _signupState.update { it.copy(gender = event.gender) }
-            is SignupEvent.SetDateOfBirth -> _signupState.update { it.copy(dob = event.dob, datePickerDialog = false) }
+            is SignupEvent.SetDateOfBirth -> _signupState.update { it.copy(dob = event.dob , datePickerDialog = false) }
             is SignupEvent.SetPassword -> _signupState.update { it.copy(password = event.password) }
             is SignupEvent.SetConfirmPassword -> _signupState.update { it.copy(confirmPassword = event.confirmPassword) }
 
             SignupEvent.GotoLogin -> TODO()
             SignupEvent.HideDatePickerDialog -> _signupState.update { it.copy(datePickerDialog = false) }
             SignupEvent.ShowDatePickerDialog -> _signupState.update { it.copy(datePickerDialog = true) }
+            SignupEvent.ConfirmPasswordVisibility ->_signupState.update { it.copy(confirmPasswordHidden = !signupState.value.confirmPasswordHidden) }
+            SignupEvent.PasswordVisibility -> _signupState.update { it.copy(passwordHidden = !signupState.value.passwordHidden) }
+            SignupEvent.Signup -> TODO()
             else -> {
                 val username = signupState.value.userName
                 val fullName = signupState.value.fullName

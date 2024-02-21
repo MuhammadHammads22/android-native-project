@@ -6,8 +6,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -24,6 +26,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -31,10 +34,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -147,12 +147,13 @@ fun loginScreen(state:LoginState,event:(LoginEvent)->Unit){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
-    LazyColumn {
-//    (modifier= Modifier
-//        .fillMaxSize()
-//        .padding(horizontal = 16.dp)
-//        .offset(y = -40.dp), verticalArrangement =Arrangement.Center
-//        , horizontalAlignment = Alignment.CenterHorizontally )
+    LazyColumn(modifier= Modifier
+        .fillMaxSize()
+        .padding(horizontal = 15.dp),
+        verticalArrangement =Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
         item {
             Image(
                 painter = painterResource(id = com.example.saferzapp01.R.drawable.sefarz_logo),
@@ -162,44 +163,30 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
             )
         }
         item {
-            TextField(
+            OutlinedTextField(
                 value = state.email,
                 onValueChange = { event(SignupEvent.SetEmail(it)) },
-                placeholder = { Text(text = "Email") },
+                supportingText={ Text(text = "", maxLines = 1)},
+                label={Text("Email")},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                ),
+                    .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
                     // type of keyboard such as text, number, phone.
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 )
             )
         }
         item {
-            TextField(
+            OutlinedTextField(
                 value = state.userName,
                 onValueChange = { event(SignupEvent.SetUserName(it)) },
-                placeholder = { Text(text = "User Name") },
+                label = { Text(text = "UserName")},
+                supportingText={ Text(text = "", maxLines = 1)},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                ),
+                    .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
@@ -210,20 +197,13 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
             )
         }
         item {
-            TextField(
+            OutlinedTextField(
                 value = state.fullName,
                 onValueChange = { event(SignupEvent.SetFullName(it)) },
-                placeholder = { Text(text = "Full Name") },
+                label = { Text(text = "FullName")},
+                supportingText={ Text(text = "", maxLines = 1)},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                ),
+                    .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
@@ -234,20 +214,13 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
             )
         }
         item {
-            TextField(
+            OutlinedTextField(
                 value = state.religion,
                 onValueChange = { event(SignupEvent.SetReligion(it)) },
-                placeholder = { Text(text = "Religion") },
+                label = { Text(text = "Religion")},
+                supportingText={ Text(text = "", maxLines = 1)},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                ),
+                    .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
@@ -258,20 +231,16 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
             )
         }
         item {
-            TextField(
+            Row(modifier=Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                OutlinedTextField(
                 value = state.gender,
                 onValueChange = { event(SignupEvent.SetGender(it)) },
-                placeholder = { Text(text = "Gender") },
+                label={ Text(text = "Gender")},
+                supportingText={ Text(text = "", maxLines = 1)},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                ),
+                    .weight(1f)
+                    .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
@@ -281,57 +250,27 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
                 )
             )
 
-//            Text(text = state.dob,modifier = Modifier
-//                .clickable { SignupEvent.ShowDatePickerDialog }
-//                .fillMaxWidth()
-//                .padding(top = 12.dp)
-//                .clip(RoundedCornerShape(30.dp))
-//                .background(color = Color.LightGray)
-//                , color = Color.Gray)
-
-            TextField(
+//
+                OutlinedTextField(
                 value = state.dob,
-                onValueChange = { text = it },
-                label = { Text("yyyy-MM-dd") },
-                leadingIcon = { Icon(Icons.Filled.Favorite, contentDescription = "Localized description") },
-                trailingIcon = { Icon(Icons.Filled.Info, contentDescription = "Localized description") }
+                onValueChange = {event(SignupEvent.SetDateOfBirth(it)) },
+                label = { Text("DOB") },
+                modifier= Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                supportingText={ Text(text = "format: yyyy/mmm/dd", maxLines = 1)},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next),
+                trailingIcon = {
+                    IconButton(onClick = { event(SignupEvent.ShowDatePickerDialog) }) {
+                        Icon(painterResource(id = R.drawable.ic_calendar_month), contentDescription = "Calendar Button")
+                    }
+                }
             )
 
-            Button(onClick = { event(SignupEvent.ShowDatePickerDialog) }, modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clip(RoundedCornerShape(30.dp))
-                ) {
-                Text(text = state.dob)
-            }
-//            Text(
-//                text = state.dob,
-//                onValueChange = { event(SignupEvent.SetDateOfBirth(it)) },
-//                placeholder = { Text(text = "Birth Date") },
-//                modifier = Modifier
-//                    .clickable { SignupEvent.ShowDatePickerDialog }
-//                    .fillMaxWidth()
-//                    .padding(top = 12.dp),
-//                shape = RoundedCornerShape(30.dp),
-//                colors = TextFieldDefaults.textFieldColors(
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                    disabledIndicatorColor = Color.Transparent,
-//                    disabledTextColor = Color.Transparent,
-//                ),
-//                singleLine = true,
-//                keyboardOptions = KeyboardOptions(
-//                    // below line is used to specify our
-//                    // type of keyboard such as text, number, phone.
-//                    keyboardType = KeyboardType.Text,
-//                    imeAction = ImeAction.Next
-//                )
-//            )
-
-            // TODO demo how to read the selected date from the state.
             if (state.datePickerDialog) {
                 val datePickerState =
-                    rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+                    rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
                 val confirmEnabled = remember {
                     derivedStateOf { datePickerState.selectedDateMillis != null }
                 }
@@ -366,27 +305,75 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
                     DatePicker(state = datePickerState)
                 }
             }
-        }
+            }
 
-        item {
-            TextField(
-                value = state.password,
-                onValueChange = { event(SignupEvent.SetPassword(it)) },
-                singleLine = true,
-                label = { Text("Enter password") },
-                visualTransformation =
-                if (state.passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = { event(SignupEvent.PasswordVisibility) }) {
-                        val visibilityIcon =
-                            if (state.passwordHidden) R.drawable.visibility else R.drawable.visibility_off
-                        // Please provide localized description for accessibility services
-                        val description = if (state.passwordHidden) "Show password" else "Hide password"
-                        Icon(painter = painterResource(visibilityIcon), contentDescription = description)
-                    }
-                }
-            )
+        }
+item {
+    OutlinedTextField(
+        value = state.password,
+        onValueChange = { event(SignupEvent.SetPassword(it)) },
+        modifier = Modifier.fillMaxWidth(),
+        supportingText={ Text(text = "", maxLines = 1)},
+        singleLine = true,
+        label = { Text("Password") },
+        visualTransformation =
+        if (state.passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next),
+        trailingIcon = {
+            IconButton(onClick = { event(SignupEvent.PasswordVisibility) }) {
+                val visibilityIcon =
+                    if (state.passwordHidden) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+                // Please provide localized description for accessibility services
+                val description =
+                    if (state.passwordHidden) "Show password" else "Hide password"
+                Icon(
+                    painter = painterResource(visibilityIcon),
+                    contentDescription = description
+                )
+            }
+        }
+    )
+}
+
+
+
+//            Button(onClick = { event(SignupEvent.ShowDatePickerDialog) }, modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp)
+//                .clip(RoundedCornerShape(30.dp))
+//                ) {
+//                Text(text = state.dob)
+//            }
+//            Text(
+//                text = state.dob,
+//                onValueChange = { event(SignupEvent.SetDateOfBirth(it)) },
+//                placeholder = { Text(text = "Birth Date") },
+//                modifier = Modifier
+//                    .clickable { SignupEvent.ShowDatePickerDialog }
+//                    .fillMaxWidth()
+//                    .padding(top = 12.dp),
+//                shape = RoundedCornerShape(30.dp),
+//                colors = TextFieldDefaults.textFieldColors(
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                    disabledIndicatorColor = Color.Transparent,
+//                    disabledTextColor = Color.Transparent,
+//                ),
+//                singleLine = true,
+//                keyboardOptions = KeyboardOptions(
+//                    // below line is used to specify our
+//                    // type of keyboard such as text, number, phone.
+//                    keyboardType = KeyboardType.Text,
+//                    imeAction = ImeAction.Next
+//                )
+//            )
+
+            // TODO demo how to read the selected date from the state.
+
+
+
+
 
 
 //            TextField(
@@ -439,33 +426,36 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
 //                singleLine = true
 //            )
 
-
-            TextField(
+        item {
+            OutlinedTextField(
                 value = state.confirmPassword,
                 onValueChange = { event(SignupEvent.SetConfirmPassword(it)) },
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Enter password") },
+                label = { Text("Confirm Password") },
+                supportingText={ Text(text = "", maxLines = 1)},
                 visualTransformation =
                 if (state.confirmPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done),
                 trailingIcon = {
                     IconButton(onClick = { event(SignupEvent.ConfirmPasswordVisibility) }) {
                         val visibilityIcon =
-                            if (state.confirmPasswordHidden) R.drawable.visibility else R.drawable.visibility_off
+                            if (state.confirmPasswordHidden) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                         // Please provide localized description for accessibility services
-                        val description = if (state.confirmPasswordHidden) "Show password" else "Hide password"
+                        val description =
+                            if (state.confirmPasswordHidden) "Show password" else "Hide password"
                         Icon(painter = painterResource(visibilityIcon), contentDescription = description)
                     }
                 }
             )
-
         }
+
         item {
             Button(
                 onClick = {event(SignupEvent.Signup)}, modifier = Modifier
-                    .padding(top = 12.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)), colors = ButtonDefaults.buttonColors(
+                    ,colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black
                 )
             ) {
@@ -509,5 +499,6 @@ fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
             )
         }
     }
+        item { Spacer(modifier = Modifier.height(100.dp)) }
     }
 }
