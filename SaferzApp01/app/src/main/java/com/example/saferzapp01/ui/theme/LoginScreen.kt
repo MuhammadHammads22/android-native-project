@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.instagramui.Safers
+package com.example.Safers
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,90 +61,111 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun loginScreen(state:LoginState,event:(LoginEvent)->Unit){
-        Column (modifier= Modifier
+fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
+
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .offset(y = -40.dp), verticalArrangement =Arrangement.Center
-            , horizontalAlignment = Alignment.CenterHorizontally ) {
-            Image(painter = painterResource(id =com.example.saferzapp01.R.drawable.sefarz_logo) , contentDescription ="logo"
-                , contentScale = ContentScale.Crop , modifier = Modifier.size(200.dp))
-            TextField(value = state.email, onValueChange = {event(LoginEvent.SetEmail(it))}, placeholder = { Text(text = "Email") },modifier= Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-                shape= RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color.Transparent,
-                    )
-                , singleLine = true
-                , keyboardOptions =  KeyboardOptions(
+            .padding(horizontal = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        item {
+            Image(
+                painter = painterResource(id = com.example.saferzapp01.R.drawable.sefarz_logo),
+                contentDescription = "logo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = state.email,
+                onValueChange = { event(LoginEvent.SetEmail(it)) },
+                supportingText = { Text(text = "", maxLines = 1) },
+                label = { Text("Email") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
                     // type of keyboard such as text, number, phone.
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
-                ))
-            TextField(value = state.password, onValueChange = {event(LoginEvent.SetPassword(it))}, placeholder = { Text(text = "Password") },modifier= Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                ,shape= RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.run {
-                    textFieldColors(
-                                unfocusedTextColor =  Color.Gray,
-                                disabledTextColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            )
-                },
-                visualTransformation = PasswordVisualTransformation()
-                , keyboardOptions =  KeyboardOptions(
+                )
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = state.password,
+                onValueChange = { event(LoginEvent.SetPassword(it)) },
+                supportingText = { Text(text = "", maxLines = 1) },
+                label = { Text("Password") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
                     // below line is used to specify our
                     // type of keyboard such as text, number, phone.
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                )
-            , singleLine = true
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                visualTransformation =
+                if (state.passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+                trailingIcon = {
+                    IconButton(onClick = { event(LoginEvent.PasswordVisibility) }) {
+                        val visibilityIcon =
+                            if (state.passwordHidden) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+                        // Please provide localized description for accessibility services
+                        val description =
+                            if (state.passwordHidden) "Show password" else "Hide password"
+                        Icon(
+                            painter = painterResource(visibilityIcon),
+                            contentDescription = description
+                        )
+                    }
+                }
             )
-
-            Text(text = "Forgot password?", color = Color.Black,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.SemiBold,
-                textDecoration = TextDecoration.None,
-                modifier= Modifier
-                    .padding(top = 12.dp, end = 15.dp)
-                    .align(Alignment.End)
-            )
-
-            Button(onClick = {event(LoginEvent.Login)}, modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(10.dp))
-            , colors= ButtonDefaults.buttonColors(
+        }
+        item {
+            Button(
+                onClick = { event(LoginEvent.Login) },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black
-            ) ){
+                ),
+            ) {
                 Text(text = "Login")
             }
 
-
-            Row (modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                , horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically){
-                Text(text = "Dont have an account?  ",color = Color.Black,
+        }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp), horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Dont have an account?  ", color = Color.Black,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Light,
-                    textDecoration = TextDecoration.None)
+                    textDecoration = TextDecoration.None
+                )
 
-                Text(text = "SignUp", color = Color.Black,
+                Text(
+                    text = "SignUp", color = Color.Black,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textDecoration = TextDecoration.None)
+                    textDecoration = TextDecoration.None
+                )
             }
         }
+    }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun signUp(state:SignupState,event: (SignupEvent)->Unit) {
@@ -337,95 +359,6 @@ item {
 }
 
 
-
-//            Button(onClick = { event(SignupEvent.ShowDatePickerDialog) }, modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//                .clip(RoundedCornerShape(30.dp))
-//                ) {
-//                Text(text = state.dob)
-//            }
-//            Text(
-//                text = state.dob,
-//                onValueChange = { event(SignupEvent.SetDateOfBirth(it)) },
-//                placeholder = { Text(text = "Birth Date") },
-//                modifier = Modifier
-//                    .clickable { SignupEvent.ShowDatePickerDialog }
-//                    .fillMaxWidth()
-//                    .padding(top = 12.dp),
-//                shape = RoundedCornerShape(30.dp),
-//                colors = TextFieldDefaults.textFieldColors(
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                    disabledIndicatorColor = Color.Transparent,
-//                    disabledTextColor = Color.Transparent,
-//                ),
-//                singleLine = true,
-//                keyboardOptions = KeyboardOptions(
-//                    // below line is used to specify our
-//                    // type of keyboard such as text, number, phone.
-//                    keyboardType = KeyboardType.Text,
-//                    imeAction = ImeAction.Next
-//                )
-//            )
-
-            // TODO demo how to read the selected date from the state.
-
-
-
-
-
-
-//            TextField(
-//                value = state.password,
-//                onValueChange = { event(SignupEvent.SetPassword(it)) },
-//                placeholder = { Text(text = "Password") },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 12.dp),
-//                shape = RoundedCornerShape(30.dp),
-//                colors = TextFieldDefaults.textFieldColors(
-//                    focusedTextColor = Color.Gray,
-//                    disabledTextColor = Color.Transparent,
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                    disabledIndicatorColor = Color.Transparent
-//                ),
-//                visualTransformation = PasswordVisualTransformation(),
-//                keyboardOptions = KeyboardOptions(
-//                    // below line is used to specify our
-//                    // type of keyboard such as text, number, phone.
-//                    keyboardType = KeyboardType.Text,
-//                    imeAction = ImeAction.Next
-//                ),
-//                singleLine = true
-//            )
-
-//            TextField(
-//                value = state.confirmPassword,
-//                onValueChange = { event(SignupEvent.SetConfirmPassword(it)) },
-//                placeholder = { Text(text = "Confirm Password") },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 12.dp),
-//                shape = RoundedCornerShape(30.dp),
-//                colors = TextFieldDefaults.textFieldColors(
-//                    unfocusedTextColor = Color.Gray,
-//                    disabledTextColor = Color.Transparent,
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                    disabledIndicatorColor = Color.Transparent
-//                ),
-//                visualTransformation = PasswordVisualTransformation(),
-//                keyboardOptions = KeyboardOptions(
-//                    // below line is used to specify our
-//                    // type of keyboard such as text, number, phone.
-//                    keyboardType = KeyboardType.Text,
-//                    imeAction = ImeAction.Next
-//                ),
-//                singleLine = true
-//            )
-
         item {
             OutlinedTextField(
                 value = state.confirmPassword,
@@ -437,7 +370,7 @@ item {
                 visualTransformation =
                 if (state.confirmPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done),
+                    imeAction = ImeAction.Next),
                 trailingIcon = {
                     IconButton(onClick = { event(SignupEvent.ConfirmPasswordVisibility) }) {
                         val visibilityIcon =
@@ -461,21 +394,6 @@ item {
             ) {
                 Text(text = "SignUp")
             }
-
-//        Text(text = "Or",color=Color.Gray,modifier=Modifier.padding(top=12.dp))
-
-//        Button(onClick = {}, modifier = Modifier
-//            .padding(top = 12.dp)
-//            .fillMaxWidth()
-//            ,
-//            contentPadding = PaddingValues(6.dp),
-//            shape= RoundedCornerShape(20.dp),
-//            border = BorderStroke(2.dp, color = Color.Black)
-//            , colors= ButtonDefaults.buttonColors(
-//                containerColor = Color.White
-//            ) ){
-//            Text(text = "Sign in with google",color=Color.Black)
-
 
 
         Row(

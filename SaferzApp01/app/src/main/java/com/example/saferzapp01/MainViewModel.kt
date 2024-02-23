@@ -49,19 +49,19 @@ class MainViewModel @Inject constructor( val repository:Repository):ViewModel() 
     val signupState = _signupState.asStateFlow()
     fun onLoginEvent(event: LoginEvent) {
         when (event) {
-            LoginEvent.Login -> {
+            is LoginEvent.SetEmail -> _loginState.update { it.copy(email = event.email) }
+            is LoginEvent.SetPassword -> _loginState.update { it.copy(password = event.password) }
+            LoginEvent.gotoSignup -> TODO()
+            LoginEvent.PasswordVisibility -> _loginState.update { it.copy(passwordHidden = !loginState.value.passwordHidden) }
+            else->
+            {
                 val email = loginState.value.email
                 val password = loginState.value.password
                 viewModelScope.launch(Dispatchers.IO) {
                     repository.login(signinBody = LoginRequest(email = email, password = password))
-                }
-
 
             }
-
-            is LoginEvent.SetEmail -> _loginState.update { it.copy(email = event.email) }
-            is LoginEvent.SetPassword -> _loginState.update { it.copy(password = event.password) }
-            LoginEvent.gotoSignup -> TODO()
+        }
         }
     }
 
@@ -81,7 +81,6 @@ class MainViewModel @Inject constructor( val repository:Repository):ViewModel() 
             SignupEvent.ShowDatePickerDialog -> _signupState.update { it.copy(datePickerDialog = true) }
             SignupEvent.ConfirmPasswordVisibility ->_signupState.update { it.copy(confirmPasswordHidden = !signupState.value.confirmPasswordHidden) }
             SignupEvent.PasswordVisibility -> _signupState.update { it.copy(passwordHidden = !signupState.value.passwordHidden) }
-            SignupEvent.Signup -> TODO()
             else -> {
                 val username = signupState.value.userName
                 val fullName = signupState.value.fullName

@@ -15,4 +15,5 @@ interface UserAuthentication {
 
     @POST("/user/register/")
     suspend fun signup(@Body signupBody: SignupRequest):Response<SignupResponse>
+
 }

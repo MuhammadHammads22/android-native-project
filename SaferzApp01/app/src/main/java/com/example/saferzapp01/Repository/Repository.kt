@@ -5,7 +5,6 @@ import com.example.saferzapp01.model.Login.LoginRequest
 import com.example.saferzapp01.model.Login.LoginResponse
 import com.example.saferzapp01.model.Signup.SignupRequest
 import com.example.saferzapp01.model.Signup.SignupResponse
-import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -17,4 +16,5 @@ class Repository @Inject constructor(val api:UserAuthentication) {
         suspend fun signup(signupBody:SignupRequest):Response<SignupResponse>{
             return api.signup(signupBody)
         }
+
 }

@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.instagramui.Safers.loginScreen
-import com.example.instagramui.Safers.signUp
+import com.example.Safers.loginScreen
+import com.example.Safers.signUp
 import com.example.saferzapp01.Events.SignupEvent
 import com.example.saferzapp01.ui.theme.SaferzApp01Theme
 import com.example.saferzmobileapp.MainViewModel
@@ -56,68 +56,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    signUp(state = signupState, event = viewmodel::onSignupEvent)
+
 //                    val noOfCore=3
 //                    var list = mutableListOf<Double>(1.0,2.0,4.0,53.0,12.0,23.0,11.0,51.0)
 //                    var i=list.size/noOfCore
 //                    for(i in 0..i){
 //                        doSum()
 //                }
+                    signUp(state = signupState, event = viewmodel::onSignupEvent)
 
-//                    Greeting("Android")
-//                    loginScreen(loginState,viewmodel::onLoginEvent)
 
-//                    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = 1578096000000)
-//                    DatePicker(state = datePickerState, modifier = Modifier.padding(16.dp))
+//                  loginScreen(loginState,viewmodel::onLoginEvent)
 
-                    // Decoupled snackbar host state from scaffold state for demo purposes.
-//                    val snackState = remember { SnackbarHostState() }
-//                    val snackScope = rememberCoroutineScope()
-//                    SnackbarHost(hostState = snackState, Modifier)
-//                    val openDialog = remember { mutableStateOf(true) }
-// TODO demo how to read the selected date from the state.
-//                    if (openDialog.value) {
-//                        val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-//                        val confirmEnabled = remember {
-//                            derivedStateOf { datePickerState.selectedDateMillis != null }
-//                        }
-//                        DatePickerDialog(
-//                            onDismissRequest = {
-//                                // Dismiss the dialog when the user clicks outside the dialog or on the back
-//                                // button. If you want to disable that functionality, simply use an empty
-//                                // onDismissRequest.
-//                                openDialog.value = false
-//                            },
-//                            confirmButton = {
-//                                TextButton(
-//                                    onClick = {
-//                                        openDialog.value = false
-//                                        snackScope.launch {
-//                                            snackState.showSnackbar(
-//                                                "Selected date timestamp: ${datePickerState.selectedDateMillis}"
-//                                            )
-//                                        }
-//                                    },
-//                                    enabled = confirmEnabled.value
-//                                ) {
-//                                    Text("OK")
-//                                }
-//                            },
-//                            dismissButton = {
-//                                TextButton(
-//                                    onClick = {
-//                                        openDialog.value = false
-//                                    }
-//                                ) {
-//                                    Text("Cancel")
-//                                }
-//                            }
-//                        ) {
-//                            DatePicker(state = datePickerState)
-//                        }
-//
-//
-//                    }
+
                 }
             }
         }
