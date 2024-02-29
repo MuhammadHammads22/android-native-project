@@ -28,28 +28,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModelProvider
 import com.example.Safers.loginScreen
-import com.example.Safers.signUp
 import com.example.saferzapp01.Events.SignupEvent
+import com.example.saferzapp01.Views.signUp
 import com.example.saferzapp01.ui.theme.SaferzApp01Theme
 import com.example.saferzmobileapp.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_internal_builders_ViewModelComponentBuilder
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewmodel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
+//    private val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.actionBar?.hide()
         installSplashScreen().apply {
-            setKeepOnScreenCondition { viewmodel.loading.value }
+            setKeepOnScreenCondition { viewModel.loading.value }
         }
         setContent {
-            val signupState by viewmodel.signupState.collectAsState()
-            val loginState by viewmodel.loginState.collectAsState()
+            val signupState by viewModel.signupState.collectAsState()
+            val loginState by viewModel.loginState.collectAsState()
             SaferzApp01Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -63,10 +67,10 @@ class MainActivity : ComponentActivity() {
 //                    for(i in 0..i){
 //                        doSum()
 //                }
-                    signUp(state = signupState, event = viewmodel::onSignupEvent)
+                    signUp(state = signupState, event = viewModel::onSignupEvent)
 
 
-//                  loginScreen(loginState,viewmodel::onLoginEvent)
+//                  loginScreen(loginState,viewModel::onLoginEvent)
 
 
                 }

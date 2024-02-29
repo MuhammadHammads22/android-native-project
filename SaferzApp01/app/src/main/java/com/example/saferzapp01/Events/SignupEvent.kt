@@ -15,4 +15,13 @@ sealed interface SignupEvent {
         object ConfirmPasswordVisibility:SignupEvent
         object Signup:SignupEvent
         object GotoLogin:SignupEvent
+        object CheckEmailValidity:SignupEvent
+        object CheckPasswordValidity:SignupEvent
+        object CheckConfirmPasswordValidity:SignupEvent
+        object CheckDobValidity:SignupEvent
+        object CheckGenderValidity:SignupEvent
+        object CheckReligionValidity:SignupEvent
+        object CheckUserNameValidity:SignupEvent
+        object CheckFullNameValidity:SignupEvent
+
 }
