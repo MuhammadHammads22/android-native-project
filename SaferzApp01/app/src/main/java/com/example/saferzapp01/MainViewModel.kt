@@ -10,8 +10,12 @@ import com.example.saferzapp01.States.LoginState
 import com.example.saferzapp01.States.SignupState
 import com.example.saferzapp01.Utils.auth.SignUp.ValidateSignupForm
 import com.example.saferzapp01.model.Login.LoginRequest
+import com.example.saferzapp01.model.Signup.Errors
+import com.example.saferzapp01.model.Signup.LoginFail
+import com.example.saferzapp01.model.Signup.LoginSuccess
+import com.example.saferzapp01.model.Signup.SignupApiResponse
 import com.example.saferzapp01.model.Signup.SignupRequest
-import com.example.saferzapp01.model.Signup.SignupResponse
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -45,19 +49,66 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
     fun onLoginEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.SetEmail -> _loginState.update { it.copy(email = event.email) }
+
+            is LoginEvent.CheckEmailValidity -> {
+                val emailValid = ValidateSignupForm().validateEmail(loginState.value.email)
+                if (!emailValid.successful) {
+                    _loginState.update {
+                        it.copy(
+                            isErrorEmail = true,
+                            errorEmail = emailValid.errorMessage
+                        )
+                    }
+                } else {
+                    _loginState.update {
+                        it.copy(
+                            isErrorEmail = false,
+                            errorEmail = ""
+                        )
+                    }
+                }
+            }
+
             is LoginEvent.SetPassword -> _loginState.update { it.copy(password = event.password) }
-//            LoginEvent.gotoSignup -> TODO()
+
+            is LoginEvent.CheckPasswordValidity -> {
+                val validPassword = ValidateSignupForm().validatePassword(loginState.value.password)
+                if (!validPassword.successful) {
+                    _loginState.update {
+                        it.copy(
+                            errorPassword = validPassword.errorMessage,
+                            isErrorPassword = true
+                        )
+                    }
+                } else {
+                    _loginState.update {
+                        it.copy(
+                            errorPassword = "",
+                            isErrorPassword = false
+                        )
+                    }
+                }
+
+            }
+
             LoginEvent.PasswordVisibility -> _loginState.update { it.copy(passwordHidden = !loginState.value.passwordHidden) }
-            else->
-            {
+            LoginEvent.gotoSignup -> TODO()
+            else -> {
                 val email = loginState.value.email
                 val password = loginState.value.password
                 viewModelScope.launch(Dispatchers.IO) {
-                    val response=repository.login(signinBody = LoginRequest(email = email, password = password))
-                    if(response.isSuccessful){Log.d("Response",response.body().toString())}
-                    Log.d("Response error",response.body().toString()+response.code().toString())
+                    val response = repository.login(
+                        signinBody = LoginRequest(
+                            email = email,
+                            password = password
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("Response", response.body().toString())
+                    }
+                    Log.d("Response error", response.body().toString() + response.code().toString())
+                }
             }
-        }
         }
     }
 
@@ -68,16 +119,27 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
             is SignupEvent.SetFullName -> _signupState.update { it.copy(fullName = event.fullName) }
             is SignupEvent.SetReligion -> _signupState.update { it.copy(religion = event.religion) }
             is SignupEvent.SetGender -> _signupState.update { it.copy(gender = event.gender) }
-            is SignupEvent.SetDateOfBirth -> _signupState.update { it.copy(dob = event.dob , datePickerDialog = false) }
+            is SignupEvent.SetDateOfBirth -> _signupState.update {
+                it.copy(
+                    dob = event.dob,
+                    datePickerDialog = false
+                )
+            }
+
             is SignupEvent.SetPassword -> _signupState.update { it.copy(password = event.password) }
             is SignupEvent.SetConfirmPassword -> _signupState.update { it.copy(confirmPassword = event.confirmPassword) }
             SignupEvent.GotoLogin -> TODO()
             SignupEvent.HideDatePickerDialog -> _signupState.update { it.copy(datePickerDialog = false) }
             SignupEvent.ShowDatePickerDialog -> _signupState.update { it.copy(datePickerDialog = true) }
-            SignupEvent.ConfirmPasswordVisibility ->_signupState.update { it.copy(confirmPasswordHidden = !signupState.value.confirmPasswordHidden) }
+            SignupEvent.ConfirmPasswordVisibility -> _signupState.update {
+                it.copy(
+                    confirmPasswordHidden = !signupState.value.confirmPasswordHidden
+                )
+            }
+
             SignupEvent.PasswordVisibility -> _signupState.update { it.copy(passwordHidden = !signupState.value.passwordHidden) }
 
-            is SignupEvent.CheckEmailValidity-> {
+            is SignupEvent.CheckEmailValidity -> {
                 val emailValid = ValidateSignupForm().validateEmail(signupState.value.email)
                 if (!emailValid.successful) {
                     _signupState.update {
@@ -86,8 +148,7 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorEmail = emailValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorEmail = false,
                         errorEmail = ""
@@ -95,24 +156,27 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                 }
             }
 
-            SignupEvent.CheckUserNameValidity ->  { val userNameValid = ValidateSignupForm().validateUserName(signupState.value.userName)
-            if (!userNameValid.successful) {
-                _signupState.update {
+            SignupEvent.CheckUserNameValidity -> {
+                val userNameValid =
+                    ValidateSignupForm().validateUserName(signupState.value.userName)
+                if (!userNameValid.successful) {
+                    _signupState.update {
+                        it.copy(
+                            isErrorUserName = true,
+                            errorUserName = userNameValid.errorMessage
+                        )
+                    }
+                } else _signupState.update {
                     it.copy(
-                        isErrorUserName = true,
-                        errorUserName = userNameValid.errorMessage
+                        isErrorUserName = false,
+                        errorUserName = ""
                     )
                 }
             }
-            else _signupState.update {
-                it.copy(
-                    isErrorUserName = false,
-                    errorUserName = ""
-                )
-            }
-        }
 
-            SignupEvent.CheckFullNameValidity -> { val fullNameValid = ValidateSignupForm().validateFullName(signupState.value.fullName)
+            SignupEvent.CheckFullNameValidity -> {
+                val fullNameValid =
+                    ValidateSignupForm().validateFullName(signupState.value.fullName)
                 if (!fullNameValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -120,8 +184,7 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorFullName = fullNameValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorFullName = false,
                         errorFullName = ""
@@ -129,7 +192,9 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                 }
             }
 
-            SignupEvent.CheckReligionValidity -> { val religionValid = ValidateSignupForm().validateReligion(signupState.value.religion)
+            SignupEvent.CheckReligionValidity -> {
+                val religionValid =
+                    ValidateSignupForm().validateReligion(signupState.value.religion)
                 if (!religionValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -137,15 +202,16 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorReligion = religionValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorReligion = false,
                         errorReligion = ""
                     )
                 }
             }
-            SignupEvent.CheckDobValidity -> { val dobValid = ValidateSignupForm().validateDate(signupState.value.dob)
+
+            SignupEvent.CheckDobValidity -> {
+                val dobValid = ValidateSignupForm().validateDate(signupState.value.dob)
                 if (!dobValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -153,15 +219,16 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorDob = dobValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorDate = false,
-                        errorDob = ""
+                        errorDob = "format: 1999-01-06"
                     )
                 }
             }
-            SignupEvent.CheckGenderValidity -> { val genderValid = ValidateSignupForm().validateGender(signupState.value.gender)
+
+            SignupEvent.CheckGenderValidity -> {
+                val genderValid = ValidateSignupForm().validateGender(signupState.value.gender)
                 if (!genderValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -169,15 +236,17 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorGender = genderValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorGender = false,
                         errorGender = ""
                     )
                 }
             }
-            SignupEvent.CheckPasswordValidity -> { val passwordValid = ValidateSignupForm().validatePassword(signupState.value.password)
+
+            SignupEvent.CheckPasswordValidity -> {
+                val passwordValid =
+                    ValidateSignupForm().validatePassword(signupState.value.password)
                 if (!passwordValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -185,15 +254,19 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorPassword = passwordValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorPassword = false,
                         errorPassword = ""
                     )
                 }
             }
-            SignupEvent.CheckConfirmPasswordValidity ->{ val confirmPasswordValid = ValidateSignupForm().validateConfirmPassword(signupState.value.password,signupState.value.confirmPassword)
+
+            SignupEvent.CheckConfirmPasswordValidity -> {
+                val confirmPasswordValid = ValidateSignupForm().validateConfirmPassword(
+                    signupState.value.password,
+                    signupState.value.confirmPassword
+                )
                 if (!confirmPasswordValid.successful) {
                     _signupState.update {
                         it.copy(
@@ -201,12 +274,11 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                             errorConfirmPassword = confirmPasswordValid.errorMessage
                         )
                     }
-                }
-                else _signupState.update {
+                } else _signupState.update {
                     it.copy(
                         isErrorConfirmPassword = false,
                         errorConfirmPassword = ""
-                        )
+                    )
                 }
             }
 
@@ -230,40 +302,54 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
                     password2 = confirmPassword
                 )
                 Log.d("Response Body", body.toString())
-                var response: Response<SignupResponse> = Response.error(
-                    400,
-                    "Empty response".toResponseBody(null)
-                )
+
+
+
+                lateinit var response: Response<LoginSuccess>
                 Log.d("Response", "before response")
 
                 viewModelScope.launch(Dispatchers.IO) {
-                    try {
-                        response =
-                            repository.signup(
-                                signupBody = body
-                            )
-                    } catch (e: Exception) {
-                        Log.d("Response error main", e.toString())
+                    response =
+                        repository.signup(
+                            signupBody = body
+                        )
+                    if(response.isSuccessful){
+                        Log.d("response success",response.body()?.msg.toString())
+                        }
+                    else {
+                        Log.d("response",response.errorBody().toString())
+                        val errorResponse =
+                            Gson().fromJson(response.errorBody().toString(), LoginFail::class.java)
+                        errorResponse.errors?.email?.forEach {
+                            Log.d("error",it.toString())
+                        }
+                        errorResponse.errors?.username?.forEach {
+                            Log.d("error",it.toString())
+                        }
                     }
 
-                    _signupState.update {
-                        it.copy(
-                            email = "",
-                            userName = "",
-                            fullName = "",
-                            religion = "",
-                            gender = "",
-                            dob = "",
-                            password = "",
-                            confirmPassword = "",
-                        )
-                    }
-                    if (response.isSuccessful) Log.d("Response Success", response.body().toString())
-                    Log.d("failed request", response.body().toString()+response.code().toString())
+
+                    //////////////////////////////////////////------------------------------------------------------
+
+//                    _signupState.update {
+//                        it.copy(
+//                            email = "",
+//                            userName = "",
+//                            fullName = "",
+//                            religion = "",
+//                            gender = "",
+//                            dob = "",
+//                            password = "",
+//                            confirmPassword = "",
+//                        )
+//                    }
+//                    if (response.isSuccessful) Log.d("Response Success", response.body().toString())
+//                    Log.d("failed request", response.body().toString()+response.code().toString())
+
                 }
             }
+
+
         }
-
-
     }
 }

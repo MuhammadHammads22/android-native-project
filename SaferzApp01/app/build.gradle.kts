@@ -89,7 +89,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
+//    navigation
+
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
 //    datePickerDialog
 
 //    implementation ("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+
+
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
@@ -39,9 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -63,7 +67,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
-
+    val focusManager= LocalFocusManager.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -72,6 +76,7 @@ fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
+
         item {
             Image(
                 painter = painterResource(id = com.example.saferzapp01.R.drawable.sefarz_logo),
@@ -84,7 +89,8 @@ fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { event(LoginEvent.SetEmail(it)) },
-                supportingText = { Text(text = "", maxLines = 1) },
+                supportingText = { Text(text = state.errorEmail, maxLines = 1) },
+                isError = state.isErrorEmail?:false,
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -94,24 +100,33 @@ fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
                     // type of keyboard such as text, number, phone.
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
-                )
+                ),
+                keyboardActions = KeyboardActions(onNext = {
+                    event(LoginEvent.CheckEmailValidity)
+                    focusManager.moveFocus(FocusDirection.Next)
+                })
             )
         }
         item {
             OutlinedTextField(
                 value = state.password,
-                onValueChange = { event(LoginEvent.SetPassword(it)) },
-                supportingText = { Text(text = "", maxLines = 1) },
+                onValueChange = {
+                    event(LoginEvent.SetPassword(it))
+                    if(it.length>2) event(LoginEvent.CheckPasswordValidity)
+                                },
+                supportingText = { Text(text = state.errorPassword, maxLines = 1) },
+                isError = state.isErrorPassword?:false,
                 label = { Text("Password") },
                 modifier = Modifier
                     .fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    // below line is used to specify our
-                    // type of keyboard such as text, number, phone.
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done
                 ),
+                keyboardActions = KeyboardActions(onDone = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }),
                 visualTransformation =
                 if (state.passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
                 trailingIcon = {
@@ -137,7 +152,10 @@ fun loginScreen(state:LoginState,event:(LoginEvent)->Unit) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black
                 ),
-                enabled = state.login
+                enabled = if(!(state.isErrorEmail?:true) && !(state.isErrorPassword?:true) ) {
+                    true
+                }
+                else false
             ) {
                 Text(text = "Login")
             }
