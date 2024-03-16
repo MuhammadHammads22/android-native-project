@@ -75,11 +75,15 @@ dependencies {
 //    dagger dependency
     implementation("com.google.dagger:hilt-android:2.48")
     ksp("com.google.dagger:hilt-compiler:2.48")
+//    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+//    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
 //    retrofit dependencies
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    //    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.9")
+//    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.9")
 
 
 //    coroutines

@@ -1,4 +1,4 @@
-package com.example.saferzmobileapp
+package com.example.saferzapp01.ViewModel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,14 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.saferzapp01.Events.LoginEvent
 import com.example.saferzapp01.Events.SignupEvent
 import com.example.saferzapp01.Repository.Repository
+import com.example.saferzapp01.States.ForgotPasswordState
 import com.example.saferzapp01.States.LoginState
 import com.example.saferzapp01.States.SignupState
 import com.example.saferzapp01.Utils.auth.SignUp.ValidateSignupForm
 import com.example.saferzapp01.model.Login.LoginRequest
-import com.example.saferzapp01.model.Signup.Errors
 import com.example.saferzapp01.model.Signup.LoginFail
 import com.example.saferzapp01.model.Signup.LoginSuccess
-import com.example.saferzapp01.model.Signup.SignupApiResponse
 import com.example.saferzapp01.model.Signup.SignupRequest
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,8 +41,13 @@ class MainViewModel @Inject constructor(private val repository:Repository):ViewM
     //    splash screen code
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
+    private val _forgotPasswordState = MutableStateFlow(ForgotPasswordState())
+    val forgotPasswordState = _loginState.asStateFlow()
     private val _signupState = MutableStateFlow(SignupState())
     val signupState = _signupState.asStateFlow()
+    fun onResetPasswordEvent(){
+
+    }
     fun onLoginEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.SetEmail -> _loginState.update { it.copy(email = event.email) }

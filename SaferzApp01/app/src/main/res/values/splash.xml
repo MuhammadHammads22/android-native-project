@@ -4,7 +4,5 @@
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/sefarz_logo</item>
         <item name="postSplashScreenTheme"> @style/Theme.SaferzApp01 </item>
-
-
     </style>
 </resources>
